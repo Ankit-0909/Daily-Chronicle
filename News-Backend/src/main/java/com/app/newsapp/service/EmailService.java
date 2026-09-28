@@ -20,7 +20,7 @@ public class EmailService {
     @Async
     public void sendOtpEmail(String toEmail, String otp) {
         sendSecureMail(toEmail,
-                "SyncRail News - Verify Your Account",
+                "The Daily Chronicle - Verify Your Account",
                 "Verify Your Account",
                 "Thank you for registering. Use the following security code to complete your verification pipeline.",
                 otp);
@@ -29,7 +29,7 @@ public class EmailService {
     @Async
     public void sendForgotPasswordOtp(String toEmail, String otp) {
         sendSecureMail(toEmail,
-                "SyncRail News - Password Reset Request",
+                "The Daily Chronicle - Password Reset Request",
                 "Password Reset Request",
                 "We received a request to reset your password. Use the secure verification code below to set a new password.",
                 otp);
@@ -43,7 +43,7 @@ public class EmailService {
             helper.setTo(toEmail);
             helper.setSubject(subject);
 
-            helper.setFrom(senderEmail, "SyncRail News Team");
+            helper.setFrom(senderEmail, "The Daily Chronicle News Team");
 
             String htmlContent = "<div style='font-family: Arial, sans-serif; border: 1px solid #e2e8f0; padding: 25px; border-radius: 8px; max-width: 480px; margin: 0 auto; color: #1e293b; background-color: #ffffff;'>"
                     + "<h2 style='color: #2563eb; margin-top: 0; font-size: 20px;'>" + headerTitle + "</h2>"
@@ -53,7 +53,7 @@ public class EmailService {
                     + "</div>"
                     + "<p style='font-size: 12px; color: #64748b;'>This code is strictly valid for <strong>3 minutes</strong>. If you did not request this operation, you can safely ignore this email.</p>"
                     + "<hr style='border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;'>"
-                    + "<p style='font-size: 11px; color: #94a3b8; text-align: center;'>SyncRail News Aggregator Engine • Localhost Dev</p>"
+                    + "<p style='font-size: 11px; color: #94a3b8; text-align: center;'>The Daily Chronicle Engine • Render Dev</p>"
                     + "</div>";
 
             helper.setText(htmlContent, true);

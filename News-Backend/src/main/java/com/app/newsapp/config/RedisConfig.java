@@ -3,6 +3,7 @@ package com.app.newsapp.config;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,17 +22,20 @@ import java.time.Duration;
 public class RedisConfig {
 
     @Bean
-    public RedisConnectionFactory redisConnectionFactory() {
-        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
-        redisStandaloneConfiguration.setHostName("172.20.14.18");
-        redisStandaloneConfiguration.setPort(6379);
+    public RedisConnectionFactory redisConnectionFactory(
+            @Value("${spring.data.redis.host}") String host,
+            @Value("${spring.data.redis.port}") int port) {
 
-        LettuceClientConfiguration clientConfig = LettuceClientConfiguration.builder()
-                .commandTimeout(Duration.ofSeconds(5))
-                .shutdownTimeout(Duration.ofMillis(100))
-                .build();
+        RedisStandaloneConfiguration config =
+                new RedisStandaloneConfiguration(host, port);
 
-        return new LettuceConnectionFactory(redisStandaloneConfiguration, clientConfig);
+        LettuceClientConfiguration clientConfig =
+                LettuceClientConfiguration.builder()
+                        .commandTimeout(Duration.ofSeconds(5))
+                        .shutdownTimeout(Duration.ofMillis(100))
+                        .build();
+
+        return new LettuceConnectionFactory(config, clientConfig);
     }
 
     @Bean

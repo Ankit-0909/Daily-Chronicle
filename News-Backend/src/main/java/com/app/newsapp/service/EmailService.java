@@ -1,21 +1,33 @@
 package com.app.newsapp.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value; // 🔥 Yeh import add karo
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import jakarta.mail.internet.MimeMessage;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.MediaType;
+
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class EmailService {
 
-    @Autowired
-    private JavaMailSender mailSender;
+//    @Autowired
+//    private JavaMailSender mailSender;
+
+    @Value("${brevo.api.key}")
+    private String brevoApiKey;
 
     @Value("${spring.mail.username}")
     private String senderEmail;
+
+    private static final String BREVO_API_URL = "https://api.brevo.com/v3/smtp/email";
+
+    private final RestTemplate restTemplate = new RestTemplate();
 
     @Async
     public void sendOtpEmail(String toEmail, String otp) {
@@ -35,16 +47,9 @@ public class EmailService {
                 otp);
     }
 
+
     private void sendSecureMail(String toEmail, String subject, String headerTitle, String messageText, String otp) {
         try {
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-
-            helper.setTo(toEmail);
-            helper.setSubject(subject);
-
-            helper.setFrom(senderEmail, "The Daily Chronicle News Team");
-
             String htmlContent = "<div style='font-family: Arial, sans-serif; border: 1px solid #e2e8f0; padding: 25px; border-radius: 8px; max-width: 480px; margin: 0 auto; color: #1e293b; background-color: #ffffff;'>"
                     + "<h2 style='color: #2563eb; margin-top: 0; font-size: 20px;'>" + headerTitle + "</h2>"
                     + "<p style='color: #475569; font-size: 14px; line-height: 1.6;'>" + messageText + "</p>"
@@ -56,10 +61,31 @@ public class EmailService {
                     + "<p style='font-size: 11px; color: #94a3b8; text-align: center;'>The Daily Chronicle Engine • Render Dev</p>"
                     + "</div>";
 
-            helper.setText(htmlContent, true);
-            mailSender.send(message);
+            // Brevo API ka expected JSON body banaya
+            Map<String, Object> sender = new HashMap<>();
+            sender.put("name", "The Daily Chronicle News Team");
+            sender.put("email", senderEmail);
+
+            Map<String, Object> recipient = new HashMap<>();
+            recipient.put("email", toEmail);
+
+            Map<String, Object> body = new HashMap<>();
+            body.put("sender", sender);
+            body.put("to", List.of(recipient));
+            body.put("subject", subject);
+            body.put("htmlContent", htmlContent);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("api-key", brevoApiKey);
+            headers.set("Accept", "application/json");
+
+            HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
+
+            restTemplate.postForEntity(BREVO_API_URL, request, String.class);
+
         } catch (Exception e) {
-            throw new RuntimeException("Failed to transmit security email pipeline: " + e.getMessage());
+            throw new RuntimeException("Failed to transmit security email pipeline: " + e.getMessage(), e);
         }
     }
 }

@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const goToDashboardBtn = document.getElementById('goToDashboardBtn');
     const switchAccountBtn = document.getElementById('switchAccountBtn');
 
-
+try{
         const refreshResponse = await fetch(`${AUTH_BASE_URL}/refresh`, {
             method: 'POST',
             credentials: 'include'
@@ -30,6 +30,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         }
     } catch (e) {    }
+
 
     adminLoginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -52,7 +53,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             if (!response.ok) {
                 throw new Error(data.message || 'Invalid email or password.');
-            }
+}
 
             const token = data.accessToken || data.token || data.jwt;
             if (!token) throw new Error('Login succeeded but no token was returned.');

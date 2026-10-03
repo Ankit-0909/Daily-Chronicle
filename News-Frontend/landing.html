@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>FeedForge — News Aggregation, Engineered</title>
+<meta name="description" content="A full-stack news aggregation platform with AI summarization, hardened authentication, and a production-grade security posture. Built by Hamid." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="icon" type="image/svg+xml" href="favicon2.svg">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F0EDE4;
+    --cream-dark:#e8e4d8;
+    --cream-dim:#ddd8c8;
+    --teal:#4fb7ae;
+    --teal-deep:#3d9a92;
+    --teal-dark:#2e7a73;
+    --teal-glow:rgba(79,183,174,0.15);
+    --teal-glow-strong:rgba(79,183,174,0.3);
+    --ink:#1e1e1e;
+    --ink-soft:#4a4a4a;
+    --ink-muted:#7a7a7a;
+    --white:#ffffff;
+    --white-warm:#faf8f3;
+    --border:rgba(79,183,174,0.18);
+    --border-light:rgba(79,183,174,0.1);
+    --shadow-sm:0 1px 3px rgba(0,0,0,0.04);
+    --shadow-md:0 4px 20px rgba(0,0,0,0.06);
+    --shadow-lg:0 12px 40px rgba(0,0,0,0.08);
+    --radius-sm:10px;
+    --radius-md:14px;
+    --radius-lg:18px;
+    --serif:'Fraunces', Georgia, serif;
+    --sans:'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --mono:'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
+    --maxw:1140px;
+    --transition:all 0.25s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  *,*::before,*::after{box-sizing:border-box;}
+  html{scroll-behavior:smooth; scroll-padding-top:80px;}
+  body{
+    margin:0;
+    background:var(--cream);
+    color:var(--ink);
+    font-family:var(--sans);
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+  }
+  img,svg{display:block; max-width:100%;}
+  a{color:inherit; text-decoration:none;}
+
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 28px;}
+
+  h1,h2,h3{font-family:var(--serif); font-weight:600; letter-spacing:-0.02em; margin:0;}
+  p{margin:0;}
+
+  
+  .status-strip{
+    background:var(--teal);
+    border-bottom:1px solid var(--teal-deep);
+  }
+  .status-strip .wrap{
+    display:flex; flex-wrap:wrap; gap:8px 32px;
+    padding:10px 28px;
+    font-family: 'Inter', sans-serif;
+    font-size:0.72rem;
+    color:rgba(255,255,255,0.9);
+  }
+  .status-strip span{display:flex; align-items:center; gap:8px;}
+  .status-strip span::before{
+    content:''; width:6px; height:6px; border-radius:50%;
+    background:rgba(255,255,255,0.85); flex-shrink:0;
+    box-shadow:0 0 6px rgba(255,255,255,0.4);
+  }
+
+  
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(240,237,228,0.92);
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border-light);
+  }
+  .nav-row{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 28px;
+  }
+  .brand{
+    display:flex; align-items:center; gap:10px;
+    font-family:var(--serif); font-weight:700; font-size:1.2rem;
+    text-decoration:none;
+    color:var(--ink);
+  }
+  .brand-mark{
+    width:32px; height:32px; border-radius:8px;
+    background:var(--teal); color:var(--white);
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--mono); font-size:0.85rem; font-weight:600;
+    flex-shrink:0;
+    box-shadow:0 2px 8px var(--teal-glow);
+  }
+  nav.links{display:flex; gap:28px; align-items:center;}
+  nav.links a{
+    font-size:0.88rem; text-decoration:none; color:var(--ink-soft);
+    transition:color .2s, transform .2s;
+    position:relative;
+    font-weight:500;
+  }
+  nav.links a::after{
+    content:''; position:absolute; bottom:-4px; left:0; width:0; height:2px;
+    background:var(--teal); border-radius:2px; transition:width .25s ease;
+  }
+  nav.links a:hover{color:var(--teal);}
+  nav.links a:hover::after{width:100%;}
+  .nav-cta{display:flex; gap:10px;}
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:10px 18px; border-radius:var(--radius-sm);
+    font-size:0.86rem; font-weight:600; text-decoration:none;
+    border:1.5px solid transparent; cursor:pointer;
+    transition:var(--transition);
+    font-family:var(--sans);
+  }
+  .btn-primary{
+    background:var(--teal); color:var(--white);
+    box-shadow:0 4px 14px var(--teal-glow);
+  }
+  .btn-primary:hover{
+    background:var(--teal-deep);
+    box-shadow:0 6px 20px var(--teal-glow-strong);
+    transform:translateY(-1px);
+  }
+  .btn-ghost{
+    border-color:var(--border); color:var(--ink-soft); background:transparent;
+  }
+  .btn-ghost:hover{
+    border-color:var(--teal); color:var(--teal); background:var(--teal-glow);
+  }
+  .menu-toggle{
+    display:none; background:none; border:1.5px solid var(--border);
+    border-radius:var(--radius-sm); width:40px; height:40px; cursor:pointer;
+    align-items:center; justify-content:center;
+    transition:var(--transition);
+  }
+  .menu-toggle:hover{border-color:var(--teal);}
+  .menu-toggle span, .menu-toggle span::before, .menu-toggle span::after{
+    display:block; width:18px; height:2px; background:var(--ink); position:relative;
+    transition:var(--transition);
+  }
+  .menu-toggle span::before, .menu-toggle span::after{
+    content:''; position:absolute; width:18px; height:2px; background:var(--ink);
+  }
+  .menu-toggle span::before{top:-6px;}
+  .menu-toggle span::after{top:6px;}
+
+  
+  .hero{padding:72px 0 56px;}
+  .hero-grid{
+    display:grid; grid-template-columns:1.4fr 0.9fr; gap:64px; align-items:start;
+  }
+  .kicker{
+    font-family: 'Manrope', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color:var(--teal-deep); margin-bottom:18px; display:block;
+    text-transform:uppercase; font-weight:600;
+  }
+  .hero h1{font-size:clamp(2.2rem, 4.5vw, 3.6rem); line-height:1.08; max-width:15ch; color:var(--ink);}
+  .hero h1 em{
+    font-style:italic;
+    background:linear-gradient(135deg, var(--teal) 0%, var(--teal-deep) 100%);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  }
+  .hero p.lede{
+    margin-top:22px; font-size:1.1rem; color:var(--ink-soft); max-width:48ch; line-height:1.7;
+  }
+  .hero-cta{display:flex; gap:14px; margin-top:32px; flex-wrap:wrap;}
+
+  .ticket{
+    background:var(--white); color:var(--ink);
+    border-radius:var(--radius-md); padding:24px 24px 20px;
+    /* font-family:var(--mono); font-size:0.78rem; */
+    font-family: 'Inter', sans-serif;
+font-size: 0.82rem;
+font-weight: 800;
+letter-spacing: 0.2px;
+    border:1px solid var(--border);
+    box-shadow:var(--shadow-md);
+    transition:var(--transition);
+  }
+  .ticket:hover{
+    box-shadow:var(--shadow-lg), 0 0 0 1px var(--border);
+    transform:translateY(-2px);
+  }
+  .ticket-head{
+    font-size:0.68rem; color:var(--ink-muted); letter-spacing:0.06em; margin-bottom:18px;
+    display:flex; justify-content:space-between; text-transform:uppercase; font-weight:600;
+  }
+  .ticket-line{
+    display:flex; justify-content:space-between; gap:10px;
+    padding:9px 0; border-top:1px solid var(--border-light);
+  }
+  .ticket-line:first-of-type{border-top:none;}
+  .ticket-line .k{color:var(--ink-muted);}
+  .ticket-line .v{color:var(--ink); font-weight:600;}
+  .ticket-line .v.ok{color:var(--teal-deep);}
+
+  
+  section{padding:72px 0;}
+  section.alt{background:var(--white-warm);}
+  .section-head{max-width:640px; margin-bottom:42px;}
+  .section-head .kicker{margin-bottom:10px;}
+  .section-head h2{font-size:clamp(1.6rem, 2.8vw, 2.2rem); color:var(--ink);}
+  .section-head p{margin-top:14px; color:var(--ink-soft); font-size:1.02rem; line-height:1.65;}
+
+  
+  .two-col{display:grid; grid-template-columns:1fr 1fr; gap:56px;}
+  .problem-card{
+    background:var(--white); border:1px solid var(--border); border-radius:var(--radius-md);
+    padding:30px;
+    box-shadow:var(--shadow-sm);
+    transition:var(--transition);
+  }
+  .problem-card:hover{
+    box-shadow:var(--shadow-md);
+    transform:translateY(-2px);
+    border-color:var(--teal-glow-strong);
+  }
+  .problem-card h3{font-size:1.15rem; margin-bottom:12px; color:var(--ink);}
+  .problem-card p{color:var(--ink-soft); line-height:1.65;}
+
+  .steps{list-style:none; margin:0; padding:0; counter-reset:step;}
+  .steps li{
+    counter-increment:step; display:grid; grid-template-columns:36px 1fr;
+    gap:16px; padding:16px 0; border-top:1px solid var(--border-light);
+    transition:var(--transition);
+  }
+  .steps li:first-child{border-top:none;}
+  .steps li::before{
+    content:counter(step);
+    font-family:var(--mono); font-size:0.78rem; color:var(--teal);
+    border:1.5px solid var(--teal); border-radius:50%;
+    width:32px; height:32px; display:flex; align-items:center; justify-content:center;
+    font-weight:600; flex-shrink:0;
+    transition:var(--transition);
+  }
+  .steps li:hover::before{
+    background:var(--teal); color:var(--white);
+    box-shadow:0 2px 10px var(--teal-glow);
+  }
+  .steps li h4{font-family:var(--sans); font-weight:700; font-size:0.98rem; margin:0 0 5px; color:var(--ink);}
+  .steps li p{color:var(--ink-soft); font-size:0.92rem; line-height:1.6;}
+
+  
+  .feature-grid{
+    display:grid; grid-template-columns:repeat(3, 1fr); gap:20px;
+  }
+  .feature{
+    background:var(--white); padding:28px; border-radius:var(--radius-md);
+    border:1px solid var(--border-light);
+    box-shadow:var(--shadow-sm);
+    transition:var(--transition);
+  }
+  .feature:hover{
+    box-shadow:var(--shadow-md);
+    transform:translateY(-4px);
+    border-color:var(--teal-glow-strong);
+  }
+  .feature .icon{
+    width:40px; height:40px; border-radius:10px; background:var(--teal-glow);
+    display:flex; align-items:center; justify-content:center; margin-bottom:16px;
+    font-family:var(--mono); font-size:1rem; color:var(--teal-deep);
+    border:1px solid var(--border);
+    transition:var(--transition);
+  }
+  .feature:hover .icon{
+    background:var(--teal); color:var(--white);
+    box-shadow:0 4px 12px var(--teal-glow);
+  }
+  .feature h3{font-size:1.05rem; font-family:var(--sans); font-weight:700; margin-bottom:8px; color:var(--ink);}
+  .feature p{font-size:0.9rem; color:var(--ink-soft); line-height:1.6;}
+
+  
+  .stack-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:24px;}
+  .stack-col{
+    background:var(--white); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:24px;
+    box-shadow:var(--shadow-sm);
+    transition:var(--transition);
+  }
+  .stack-col:hover{
+    box-shadow:var(--shadow-md);
+    transform:translateY(-2px);
+    border-color:var(--teal-glow-strong);
+  }
+  .stack-col h3{
+    font-family:var(--mono); font-size:0.82rem; color:var(--teal-deep);
+    margin-bottom:16px; padding-bottom:12px; border-bottom:1.5px solid var(--border-light);
+    text-transform:uppercase; letter-spacing:0.04em;
+  }
+  .stack-col ul{list-style:none; margin:0; padding:0;}
+  .stack-col li{
+    font-size:0.88rem; padding:7px 0; color:var(--ink-soft);
+    display:flex; align-items:baseline; gap:10px; line-height:1.5;
+  }
+  .stack-col li::before{content:'—'; color:var(--teal); flex-shrink:0; font-weight:600;}
+  .stack-col li b{color:var(--ink); font-weight:600;}
+
+  
+  .arch-flow{
+    display:flex; flex-wrap:wrap; align-items:stretch; gap:0;
+    background:var(--white); border:1px solid var(--border); border-radius:var(--radius-md); padding:32px;
+    box-shadow:var(--shadow-sm);
+  }
+  .arch-node{
+    flex:1 1 140px; padding:14px; text-align:center;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
+  }
+  .arch-node .label{font-weight:700; font-size:0.92rem; color:var(--ink);}
+  .arch-node .sub{font-family:var(--mono); font-size:0.7rem; color:var(--ink-muted);}
+  .arch-arrow{
+    display:flex; align-items:center; justify-content:center;
+    color:var(--teal); font-size:1.4rem; flex:0 0 auto; padding:0 6px;
+    opacity:0.7;
+  }
+
+  
+  .sec-list{display:grid; grid-template-columns:1fr 1fr; gap:16px 36px;}
+  .sec-item{
+    display:grid; grid-template-columns:28px 1fr; gap:14px; padding:14px 0;
+    border-top:1px solid var(--border-light);
+    transition:var(--transition);
+  }
+  .sec-item:hover{padding-left:4px;}
+  .sec-item .dot{
+    width:10px; height:10px; border-radius:50%; background:var(--teal); margin-top:6px;
+    box-shadow:0 0 8px var(--teal-glow); flex-shrink:0;
+  }
+  .sec-item h4{font-size:0.96rem; font-weight:700; margin:0 0 5px; color:var(--ink);}
+  .sec-item p{font-size:0.88rem; color:var(--ink-soft); line-height:1.55;}
+
+  
+  .test-stats{display:flex; gap:48px; flex-wrap:wrap; margin-bottom:36px;}
+  .test-stat .num{
+    font-family:var(--serif); font-size:2.4rem; font-weight:700;
+    background:linear-gradient(135deg, var(--teal) 0%, var(--teal-deep) 100%);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    line-height:1;
+  }
+  .test-stat .label{font-family:var(--mono); font-size:0.72rem; color:var(--ink-muted); letter-spacing:0.04em; margin-top:6px;}
+
+  
+  .honest-box{
+    background:var(--white); border:1px solid var(--border); border-left:4px solid var(--teal);
+    border-radius:0 var(--radius-md) var(--radius-md) 0; padding:28px 30px;
+    box-shadow:var(--shadow-sm);
+    transition:var(--transition);
+  }
+  .honest-box:hover{
+    box-shadow:var(--shadow-md);
+    transform:translateX(2px);
+  }
+  .honest-box h3{font-family:var(--sans); font-size:1.05rem; margin-bottom:14px; color:var(--ink);}
+  .honest-box ul{margin:0; padding-left:20px; color:var(--ink-soft); font-size:0.94rem;}
+  .honest-box li{margin-bottom:8px; line-height:1.6;}
+  .honest-box li::marker{color:var(--teal);}
+
+  
+  .roadmap{list-style:none; margin:0; padding:0;}
+  .roadmap li{
+    display:grid; grid-template-columns:90px 1fr; gap:20px;
+    padding:18px 0; border-top:1px solid var(--border-light);
+    transition:var(--transition);
+  }
+  .roadmap li:hover{padding-left:4px;}
+  .roadmap li:first-child{border-top:none;}
+  .roadmap .tag{
+    font-family:var(--mono); font-size:0.68rem; color:var(--teal-deep);
+    background:var(--teal-glow); border-radius:6px; height:fit-content; padding:5px 10px; text-align:center;
+    font-weight:600; letter-spacing:0.02em; border:1px solid var(--border);
+  }
+  .roadmap h4{font-size:0.98rem; font-weight:700; margin:0 0 5px; font-family:var(--sans); color:var(--ink);}
+  .roadmap p{font-size:0.88rem; color:var(--ink-soft); line-height:1.6;}
+
+  
+  .cta-band{
+    background:linear-gradient(135deg, var(--teal) 0%, var(--teal-deep) 100%);
+    color:var(--white); border-radius:var(--radius-lg);
+    padding:52px 44px;
+    display:flex; justify-content:space-between; align-items:center; gap:32px; flex-wrap:wrap;
+    box-shadow:0 12px 40px var(--teal-glow-strong);
+    position:relative; overflow:hidden;
+  }
+  .cta-band::before{
+    content:''; position:absolute; top:-50%; right:-10%; width:300px; height:300px;
+    background:rgba(255,255,255,0.06); border-radius:50%; pointer-events:none;
+  }
+  .cta-band h2{color:var(--white); font-size:1.8rem; max-width:22ch; position:relative; z-index:1;}
+  .cta-band p{color:rgba(255,255,255,0.85); margin-top:12px; max-width:42ch; position:relative; z-index:1;}
+  .cta-band .hero-cta{margin-top:24px; position:relative; z-index:1;}
+  .cta-band .btn-primary{background:var(--white); color:var(--teal-deep); box-shadow:0 4px 16px rgba(0,0,0,0.12);}
+  .cta-band .btn-primary:hover{background:var(--cream); color:var(--teal-dark);}
+  .cta-band .btn-ghost{border-color:rgba(255,255,255,0.4); color:var(--white);}
+  .cta-band .btn-ghost:hover{border-color:var(--white); background:rgba(255,255,255,0.1);}
+
+  
+  footer{padding:44px 0 64px;}
+  .foot-row{
+    display:flex; justify-content:space-between; align-items:center;
+    flex-wrap:wrap; gap:16px; padding-top:28px; border-top:1.5px solid var(--border-light);
+  }
+  .foot-row p{font-size:0.84rem; color:var(--ink-muted);}
+  .foot-links{display:flex; gap:22px;}
+  .foot-links a{font-size:0.84rem; text-decoration:none; color:var(--ink-muted); transition:color .2s; font-weight:500;}
+  .foot-links a:hover{color:var(--teal);}
+
+  
+  @media (max-width:980px){
+    .hero-grid{grid-template-columns:1fr; gap:48px;}
+    .two-col{grid-template-columns:1fr; gap:40px;}
+    .feature-grid{grid-template-columns:repeat(2,1fr);}
+    .stack-grid{grid-template-columns:repeat(2,1fr);}
+    .sec-list{grid-template-columns:1fr;}
+    .arch-flow{flex-direction:column; gap:8px;}
+    .arch-arrow{transform:rotate(90deg); padding:4px 0;}
+    .cta-band{padding:40px 32px;}
+  }
+  @media (max-width:720px){
+    nav.links{display:none;}
+    .menu-toggle{display:flex;}
+    .nav-cta .btn-ghost{display:none;}
+    .feature-grid{grid-template-columns:1fr;}
+    .stack-grid{grid-template-columns:1fr;}
+    .cta-band{flex-direction:column; align-items:flex-start; padding:36px 24px;}
+    .roadmap li{grid-template-columns:1fr;}
+    .roadmap .tag{width:fit-content;}
+    .test-stats{gap:28px;}
+    .hero{padding:48px 0 40px;}
+    section{padding:52px 0;}
+    .wrap{padding:0 20px;}
+    .nav-row{padding:14px 20px;}
+    .status-strip .wrap{padding:10px 20px;}
+  }
+  @media (max-width:480px){
+    .hero h1{font-size:2rem;}
+    .hero p.lede{font-size:1rem;}
+    .ticket{padding:20px 18px;}
+    .problem-card{padding:22px;}
+    .feature{padding:22px;}
+    .stack-col{padding:20px;}
+    .honest-box{padding:22px 20px;}
+    .cta-band h2{font-size:1.5rem;}
+    .section-head h2{font-size:1.4rem;}
+    .test-stat .num{font-size:2rem;}
+    .foot-row{flex-direction:column; align-items:flex-start;}
+  }
+
+  .hidden{display:none !important;}
+  [data-reveal]{opacity:0; transform:translateY(18px); transition:opacity .7s ease, transform .7s ease;}
+  [data-reveal].in{opacity:1; transform:translateY(0);}
+</style>
+<!-- <base target="_blank"> -->
+</head>
+<body>
+
+<header>
+  <div class="nav-row wrap">
+    <a href="#top" class="brand">
+      <span class="brand-mark">FF</span>
+      FeedForge
+    </a>
+    <nav class="links">
+      <a href="#how-it-works">How it works</a>
+      <a href="#features">Features</a>
+      <a href="#stack">Stack</a>
+      <a href="#security">Security</a>
+      <a href="#testing">Testing</a>
+      <a href="#roadmap">Roadmap</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="btn btn-ghost" href="https://github.com/Ankit-0909/Daily-Chronicle" id="githubLinkTop" target="_blank" rel="noopener">GitHub</a>
+      <a class="btn btn-primary" href="https://ankit-0909.github.io/Daily-Chronicle/" id="liveLinkTop" target="_blank" rel="noopener">Live demo</a>
+    </div>
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu"><span></span></button>
+  </div>
+  <nav class="links" id="mobileMenu" style="display:none; flex-direction:column; padding:0 28px 18px; gap:16px;">
+    <a href="#how-it-works">How it works</a>
+    <a href="#features">Features</a>
+    <a href="#stack">Stack</a>
+    <a href="#security">Security</a>
+    <a href="#testing">Testing</a>
+    <a href="#roadmap">Roadmap</a>
+    <a href="https://github.com/Ankit-0909/Daily-Chronicle" id="githubLinkMobile" target="_blank" rel="noopener">GitHub repo</a>
+  </nav>
+</header>
+
+<div class="status-strip">
+  <div class="wrap">
+    <span>Auth — JWT + OAuth2</span>
+    <span>Ingestion — RSS → Groq</span>
+    <span>Cache — Redis</span>
+    <span>DB — MySQL</span>
+    <span>Tests — JUnit 5 + Mockito</span>
+  </div>
+</div>
+
+<main id="top">
+
+  
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div data-reveal>
+        <span class="kicker">backend-engineering project — news aggregation platform</span>
+        <h1>News aggregation, <em>engineered</em> like production software.</h1>
+        <p class="lede">FeedForge pulls from live RSS feeds, summarizes every story with an LLM, and serves it through an auth system that's been hardened against the same vulnerability classes real products get attacked with.</p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="https://ankit-0909.github.io/Daily-Chronicle/" id="liveLinkHero" target="_blank" rel="noopener">View live demo</a>
+          <a class="btn btn-ghost" href="https://github.com/Ankit-0909/Daily-Chronicle" id="githubLinkHero" target="_blank" rel="noopener">View source on GitHub</a>
+        </div>
+      </div>
+      <div class="ticket" data-reveal>
+        <div class="ticket-head"><span>SYSTEM STATUS</span><span>v1.0</span></div>
+        <div class="ticket-line"><span class="k">Ingestion</span><span class="v">async, multi-source</span></div>
+        <div class="ticket-line"><span class="k">Summarizer</span><span class="v">Groq · LLaMA 3.1</span></div>
+        <div class="ticket-line"><span class="k">Token storage</span><span class="v ok">in-memory only</span></div>
+        <div class="ticket-line"><span class="k">Refresh token</span><span class="v ok">httpOnly, hashed</span></div>
+        <div class="ticket-line"><span class="k">RSS parser</span><span class="v ok">XXE-hardened</span></div>
+        <div class="ticket-line"><span class="k">Rate limiting</span><span class="v ok">Redis-backed</span></div>
+        <div class="ticket-line"><span class="k">Test suite</span><span class="v ok">passing</span></div>
+      </div>
+    </div>
+  </section>
+
+  
+  <section id="how-it-works">
+    <div class="wrap">
+      <div class="two-col">
+        <div data-reveal>
+          <span class="kicker">the problem</span>
+          <h2 style="font-size:1.7rem; margin-bottom:18px;">Reading the news is scattered across a dozen tabs.</h2>
+          <div class="problem-card">
+            <h3>Too many sources, no synthesis</h3>
+            <p>Following several outlets means juggling tabs, apps, and newsletters — with no single place that pulls it together, summarizes it, and lets you filter to what you actually care about.</p>
+          </div>
+        </div>
+        <div data-reveal>
+          <span class="kicker">how it works</span>
+          <ol class="steps">
+            <li><div><h4>Sources are registered</h4><p>An admin adds RSS feeds with a category and source name.</p></div></li>
+            <li><div><h4>Ingestion runs</h4><p>Each source is fetched and parsed asynchronously, with per-article fault isolation so one bad item never fails a whole batch.</p></div></li>
+            <li><div><h4>Content is cleaned & summarized</h4><p>HTML is stripped, and substantial articles are sent to Groq for a 3-point AI summary.</p></div></li>
+            <li><div><h4>Readers get a tailored feed</h4><p>Search, filter by category, follow sources, bookmark, and build a personalized "For You" feed.</p></div></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="alt" id="features">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <span class="kicker">what it does</span>
+        <h2>Key features</h2>
+        <p>Built for both the reader and the person running the platform.</p>
+      </div>
+      <div class="feature-grid" data-reveal>
+        <div class="feature"><div class="icon">∑</div><h3>AI summaries</h3><p>Every substantial article gets a clean, 3-point summary — with weak/garbage responses filtered before they're ever saved.</p></div>
+        <div class="feature"><div class="icon">⚷</div><h3>Full auth system</h3><p>Email/password with OTP verification, plus Google and GitHub OAuth, with session persistence that extends with activity.</p></div>
+        <div class="feature"><div class="icon">☆</div><h3>Personalization</h3><p>Bookmark articles, follow categories or sources, and get a "For You" feed built from what you actually read.</p></div>
+        <div class="feature"><div class="icon">▣</div><h3>Admin dashboard</h3><p>Manage RSS sources, write manual articles, monitor feed health, and trigger ingestion on demand.</p></div>
+        <div class="feature"><div class="icon">◎</div><h3>Feed health monitoring</h3><p>Every source's last-fetch status and failure reason is visible — nothing fails silently.</p></div>
+        <div class="feature"><div class="icon">⌁</div><h3>Rate-limit aware</h3><p>Login, registration, and OTP endpoints are protected against brute-force and abuse via Redis counters.</p></div>
+      </div>
+    </div>
+  </section>
+
+  
+  <section id="stack">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <span class="kicker">under the hood</span>
+        <h2>The stack</h2>
+        <p>Chosen deliberately, not just "what I already knew."</p>
+      </div>
+      <div class="stack-grid" data-reveal>
+        <div class="stack-col">
+          <h3>Frontend</h3>
+          <ul>
+            <li><b>HTML / CSS</b> — hand-built, no framework</li>
+            <li><b>Vanilla JavaScript</b> — fetch-based API layer</li>
+            <li>In-memory token handling, no localStorage</li>
+            <li>Responsive, mobile-first layouts</li>
+          </ul>
+        </div>
+        <div class="stack-col">
+          <h3>Backend</h3>
+          <ul>
+            <li><b>Java 17 / Spring Boot</b></li>
+            <li>Spring Security + OAuth2 Client</li>
+            <li>Spring Data JPA, Spring Mail</li>
+            <li><b>jjwt</b> for JWT signing/verification</li>
+          </ul>
+        </div>
+        <div class="stack-col">
+          <h3>AI</h3>
+          <ul>
+            <li><b>Groq API</b> — LLaMA 3.1 8B Instant</li>
+            <li>Prompt engineered against hedging/filler output</li>
+            <li>Content-length gating before any API call</li>
+          </ul>
+        </div>
+        <div class="stack-col">
+          <h3>Database</h3>
+          <ul>
+            <li><b>MySQL</b> — primary data store</li>
+            <li>JPA/Hibernate entity mapping</li>
+            <li>H2 in-memory DB for integration tests</li>
+          </ul>
+        </div>
+        <div class="stack-col">
+          <h3>Redis</h3>
+          <ul>
+            <li>Feed & article response caching</li>
+            <li>Login/OTP/registration rate limiting</li>
+            <li>One-time OAuth handoff codes</li>
+          </ul>
+        </div>
+        <div class="stack-col">
+          <h3>Other</h3>
+          <ul>
+            <li><b>Jsoup</b> — RSS/HTML content cleaning</li>
+            <li>XXE-hardened DOM XML parser</li>
+            <li>JUnit 5, Mockito, AssertJ, MockMvc</li>
+            <li>Maven, GitHub Pages, Render</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  
+  <section class="alt" id="architecture">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <span class="kicker">system overview</span>
+        <h2>Architecture</h2>
+        <p>From RSS source to a personalized reader feed.</p>
+      </div>
+      <div class="arch-flow" data-reveal>
+        <div class="arch-node"><div class="label">RSS Sources</div><div class="sub">admin-managed</div></div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node"><div class="label">Ingestion Service</div><div class="sub">async · XXE-hardened</div></div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node"><div class="label">MySQL</div><div class="sub">articles, users, tokens</div></div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node"><div class="label">Groq AI</div><div class="sub">summarization</div></div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node"><div class="label">Redis</div><div class="sub">cache + rate limits</div></div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node"><div class="label">REST API</div><div class="sub">Spring Security</div></div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node"><div class="label">Frontend</div><div class="sub">reader + admin UI</div></div>
+      </div>
+    </div>
+  </section>
+
+  
+  <section id="security">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <span class="kicker">security</span>
+        <h2>Hardened across multiple passes</h2>
+        <p>Not a single audit at the end — security was revisited repeatedly as the project grew.</p>
+      </div>
+      <div class="sec-list" data-reveal>
+        <div class="sec-item"><div class="dot"></div><div><h4>In-memory access tokens</h4><p>Never written to localStorage — gone the moment the tab closes, closing the XSS token-theft window.</p></div></div>
+        <div class="sec-item"><div class="dot"></div><div><h4>httpOnly sliding refresh cookie</h4><p>Session extends with activity without ever exposing the refresh token to JavaScript.</p></div></div>
+        <div class="sec-item"><div class="dot"></div><div><h4>One-time OAuth handoff codes</h4><p>Google/GitHub login never puts a raw JWT in a URL, browser history, or server log.</p></div></div>
+        <div class="sec-item"><div class="dot"></div><div><h4>XXE-hardened XML parsing</h4><p>RSS ingestion blocks external entity resolution — no local file disclosure from a malicious feed.</p></div></div>
+        <div class="sec-item"><div class="dot"></div><div><h4>Redis-backed rate limiting</h4><p>Login, OTP, and password-reset endpoints are throttled, with failure-only counting so real users are never penalized.</p></div></div>
+        <div class="sec-item"><div class="dot"></div><div><h4>Hashed refresh tokens at rest</h4><p>SHA-256 hashed in the database — a DB leak alone can't hijack a session.</p></div></div>
+        <div class="sec-item"><div class="dot"></div><div><h4>Enumeration-safe auth errors</h4><p>Login and forgot-password responses never reveal whether an account exists.</p></div></div>
+        <div class="sec-item"><div class="dot"></div><div><h4>Validated input everywhere</h4><p>Bean Validation on every auth request, plus per-article fault isolation during ingestion.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  
+  <section class="alt" id="testing">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <span class="kicker">testing</span>
+        <h2>Tested, not just "it works on my machine"</h2>
+      </div>
+      <div data-reveal>
+        <div class="test-stats">
+          <div class="test-stat"><div class="num">5</div><div class="label">TEST CLASSES</div></div>
+          <div class="test-stat"><div class="num">40+</div><div class="label">TEST CASES</div></div>
+          <div class="test-stat"><div class="num">2</div><div class="label">UNIT + INTEGRATION LAYERS</div></div>
+        </div>
+        <div class="stack-grid">
+          <div class="stack-col">
+            <h3>Unit tests</h3>
+            <ul>
+              <li>JWT generation, claims, expiry & forged-signature rejection</li>
+              <li>Redis rate-limit logic, fully mocked — no live Redis needed</li>
+              <li>Auth service business rules, including the enumeration-safety fix</li>
+            </ul>
+          </div>
+          <div class="stack-col">
+            <h3>Integration tests</h3>
+            <ul>
+              <li>Full register → verify-OTP → login flow over real HTTP, via MockMvc</li>
+              <li>Backed by an in-memory H2 database</li>
+              <li>Negative paths: wrong OTP, wrong password, unverified login</li>
+            </ul>
+          </div>
+          <div class="stack-col">
+            <h3>Ingestion tests</h3>
+            <ul>
+              <li>A local embedded HTTP server simulates RSS feeds</li>
+              <li>Per-article failure isolation verified directly</li>
+              <li>XXE payload rejection as a security regression test</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  
+  <section id="honesty">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <span class="kicker">honesty</span>
+        <h2>What this is — and isn't — yet</h2>
+        <p>A working project with a real feature set, built by one developer. Here's where it's genuinely limited.</p>
+      </div>
+      <div class="honest-box" data-reveal>
+        <h3>Current limitations</h3>
+        <ul>
+          <li>No dedicated full-article reading page yet — articles are read via an AI-summary modal, not an in-app original-text view.</li>
+          <li>No user profile/settings page — account details can't be edited after registration.</li>
+          <li>Background RSS fetching is manually triggered in production (by design, to protect the free-tier AI API quota) rather than running on a timer.</li>
+          <li>Single admin role — no granular permission tiers.</li>
+          <li>Hosted on free tiers, so the first request after idle time may be slow to respond.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  
+  <section class="alt" id="roadmap">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <span class="kicker">roadmap</span>
+        <h2>What's next</h2>
+      </div>
+      <ul class="roadmap" data-reveal>
+        <li><span class="tag">next</span><div><h4>Full article reading view</h4><p>A dedicated in-app page for reading the original article, not just the AI summary.</p></div></li>
+        <li><span class="tag">next</span><div><h4>User profile & settings</h4><p>Edit account details and manage preferences in one place.</p></div></li>
+        <li><span class="tag">later</span><div><h4>Push notifications</h4><p>Alerts for new articles in followed categories or sources.</p></div></li>
+        <li><span class="tag">later</span><div><h4>Expanded test coverage</h4><p>Broader coverage across the admin and personalization layers.</p></div></li>
+      </ul>
+    </div>
+  </section>
+
+  
+  <section>
+    <div class="wrap">
+      <div class="cta-band" data-reveal>
+        <div>
+          <h2>See it running, or read the code.</h2>
+          <p>Both the live app and the full source are public — dig in however you prefer.</p>
+          <div class="hero-cta">
+            <a class="btn btn-primary" href="https://ankit-0909.github.io/Daily-Chronicle/" id="liveLinkBand" target="_blank" rel="noopener">Open live demo</a>
+            <a class="btn btn-ghost" href="https://github.com/Ankit-0909/Daily-Chronicle" id="githubLinkBand" target="_blank" rel="noopener">View on GitHub</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <p>Built by Ankit Kumar — Full-Stack Developer (Spring Boot, Java, MySQL, REST APIs)</p>
+      <div class="foot-links">
+        <a href="https://github.com/Ankit-0909/Daily-Chronicle" id="githubLinkFoot" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://ankit-0909.github.io/Daily-Chronicle/" id="liveLinkFoot" target="_blank" rel="noopener">Live demo</a>
+        <a href="#top">Back to top</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const GITHUB_REPO_URL = "https://github.com/Ankit-0909/Daily-Chronicle";
+  const LIVE_DEMO_URL   = "https://ankit-0909.github.io/Daily-Chronicle/";
+
+  document.querySelectorAll('#githubLinkTop,#githubLinkMobile,#githubLinkHero,#githubLinkBand,#githubLinkFoot')
+    .forEach(el => el.href = GITHUB_REPO_URL);
+  document.querySelectorAll('#liveLinkTop,#liveLinkHero,#liveLinkBand,#liveLinkFoot')
+    .forEach(el => el.href = LIVE_DEMO_URL);
+
+  const menuToggle = document.getElementById('menuToggle');
+  const mobileMenu = document.getElementById('mobileMenu');
+  menuToggle.addEventListener('click', () => {
+    const isOpen = mobileMenu.style.display === 'flex';
+    mobileMenu.style.display = isOpen ? 'none' : 'flex';
+  });
+  mobileMenu.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => { mobileMenu.style.display = 'none'; });
+  });
+
+  const revealEls = document.querySelectorAll('[data-reveal]');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  revealEls.forEach(el => io.observe(el));
+
+</script>
+
+</body>
+</html>

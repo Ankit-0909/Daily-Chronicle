@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Daily Chronicle — Product Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --teal:#4FB7AE;
+    --teal-dark:#2F8880;
+    --cream:#F0EDE4;
+    --paper:#FAF8F2;
+    --ink:#1E2B29;
+    --ink-soft:#5B6964;
+    --rule:#DAD4C4;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    line-height:1.5;
+  }
+  a{color:inherit}
+
+  /* Masthead */
+  header.masthead{
+    padding:72px 24px 48px;
+    text-align:center;
+    border-bottom:1px solid var(--rule);
+  }
+  .kicker{
+    font-size:14px;
+    color:var(--teal-dark);
+    font-weight:600;
+    margin-bottom:10px;
+  }
+  h1{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:clamp(36px,6vw,58px);
+    letter-spacing:-0.01em;
+  }
+  .sub{
+    max-width:560px;
+    margin:18px auto 0;
+    color:var(--ink-soft);
+    font-size:17px;
+  }
+  .links{
+    margin-top:28px;
+    display:flex;
+    gap:14px;
+    justify-content:center;
+    flex-wrap:wrap;
+  }
+  .links a{
+    text-decoration:none;
+    font-weight:500;
+    font-size:15px;
+    padding:11px 22px;
+    border-radius:4px;
+    border:1px solid var(--ink);
+  }
+  .links a.primary{background:var(--teal);border-color:var(--teal);color:#0C1715}
+  .links a.ghost{background:transparent}
+
+  /* Section index */
+  nav.index{
+    max-width:900px;
+    margin:36px auto 0;
+    padding:0 24px;
+    display:flex;
+    gap:28px;
+    justify-content:center;
+    flex-wrap:wrap;
+    font-size:14px;
+  }
+  nav.index a{text-decoration:none;color:var(--ink-soft);border-bottom:1px solid transparent}
+  nav.index a:hover{color:var(--teal-dark);border-color:var(--teal-dark)}
+
+  main{max-width:1100px;margin:0 auto;padding:64px 24px 100px}
+
+  section.group{margin-bottom:88px}
+  section.group:last-child{margin-bottom:0}
+  .group-head{
+    display:flex;
+    align-items:baseline;
+    gap:16px;
+    margin-bottom:28px;
+  }
+  .group-head h2{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:30px;
+  }
+  .group-head .rule{flex:1;height:1px;background:var(--rule)}
+  .group-head p{color:var(--ink-soft);font-size:15px;margin-top:6px}
+
+  /* Flow layout for the Getting Started sequence */
+  .flow{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:0;
+    position:relative;
+  }
+  .flow .card{border-radius:0}
+  .flow .card:not(:last-child){border-right:1px dashed var(--rule)}
+
+  /* Grid layout for feature sections */
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+    gap:20px;
+  }
+
+  .card{
+    background:var(--paper);
+    border:1px solid var(--rule);
+    overflow:hidden;
+    cursor:zoom-in;
+    transition:border-color .15s ease;
+  }
+  .card:hover{border-color:var(--teal)}
+  .card img{
+    width:100%;
+    display:block;
+    aspect-ratio:16/10;
+    object-fit:cover;
+    object-position:top;
+    background:#E5E0D2;
+  }
+  .card .cap{
+    padding:14px 16px;
+    font-size:14px;
+    color:var(--ink-soft);
+  }
+
+  footer{
+    text-align:center;
+    padding:40px 24px 60px;
+    color:var(--ink-soft);
+    font-size:14px;
+  }
+
+  /* Lightbox */
+  .lightbox{
+    position:fixed;inset:0;
+    background:rgba(16,24,22,.92);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:100;
+    padding:40px;
+  }
+  .lightbox.open{display:flex}
+  .lightbox figure{max-width:min(1100px,92vw);max-height:88vh;text-align:center}
+  .lightbox img{max-width:100%;max-height:78vh;border:1px solid rgba(255,255,255,.15)}
+  .lightbox figcaption{color:#F0EDE4;margin-top:14px;font-size:15px}
+  .lightbox .ctrl{
+    position:absolute;
+    background:none;border:none;color:#F0EDE4;
+    font-size:28px;cursor:pointer;
+    padding:14px;
+    opacity:.7;
+  }
+  .lightbox .ctrl:hover{opacity:1}
+  .lightbox .close{top:14px;right:14px}
+  .lightbox .prev{left:6px;top:50%;transform:translateY(-50%)}
+  .lightbox .next{right:6px;top:50%;transform:translateY(-50%)}
+
+  @media(max-width:600px){
+    .flow .card:not(:last-child){border-right:none;border-bottom:1px dashed var(--rule)}
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="kicker">The Daily Chronicle</div>
+  <h1>Inside the product</h1>
+  <p class="sub">A full walkthrough of the reading experience, the admin console, and the security work underneath — in twenty screenshots.</p>
+  <div class="links">
+    <a class="primary" href="index.html">Open the live app</a>
+    <a class="ghost" href="https://github.com/Ankit-0909/Daily-Chronicle" target="_blank" rel="noopener">View source on GitHub</a>
+  </div>
+  <nav class="index">
+    <a href="#getting-started">Getting Started</a>
+    <a href="#reading">The Reading Experience</a>
+    <a href="#admin">Admin Console</a>
+    <a href="#security">Security &amp; Reliability</a>
+  </nav>
+</header>
+
+<main id="gallery"></main>
+
+<div class="lightbox" id="lightbox">
+  <button class="ctrl close" id="lbClose">&times;</button>
+  <button class="ctrl prev" id="lbPrev">&#8249;</button>
+  <button class="ctrl next" id="lbNext">&#8250;</button>
+  <figure>
+    <img id="lbImg" src="" alt="">
+    <figcaption id="lbCap"></figcaption>
+  </figure>
+</div>
+
+<footer>Built end-to-end with Spring Boot, MySQL, Redis, and vanilla JavaScript.</footer>
+
+<script>
+const sections = [
+  {
+    id: "getting-started",
+    title: "Getting Started",
+    note: "Registration through to a verified, logged-in session.",
+    layout: "flow",
+    shots: [
+      ["01-landing-page.png", "Landing page"],
+      ["02-register.png", "Account registration"],
+      ["03-otp-verification.png", "Email OTP verification"],
+      ["04-login-oauth.png", "Login, with Google and GitHub OAuth"],
+    ]
+  },
+  {
+    id: "reading",
+    title: "The Reading Experience",
+    note: "Browsing, searching, and personalizing the feed.",
+    layout: "grid",
+    shots: [
+      ["05-news-feed.png", "Main news feed"],
+      ["06-category-filter.png", "Filtering by category"],
+      ["07-search.png", "Search results"],
+      ["08-ai-summary.png", "AI-generated article summary"],
+      ["09-bookmarks.png", "Bookmarked articles"],
+      ["10-for-you-feed.png", "Personalized “For You” feed"],
+      ["11-reading-history.png", "Reading history"],
+    ]
+  },
+  {
+    id: "admin",
+    title: "Admin Console",
+    note: "Managing sources, content, and ingestion — gated behind a separate admin role.",
+    layout: "grid",
+    shots: [
+      ["12-admin-login.png", "Role-gated admin login"],
+      ["13-admin-dashboard.png", "Admin dashboard"],
+      ["14-rss-sources-list.png", "RSS source list"],
+      ["15-add-rss-source.png", "Adding a new RSS source"],
+      ["16-feed-health.png", "Feed health monitoring"],
+      ["17-manual-article-crud.png", "Manual article editing"],
+      ["18-fetch-news-success.png", "On-demand ingestion trigger"],
+    ]
+  },
+  {
+    id: "security",
+    title: "Security & Reliability",
+    note: "What happens when things go wrong, and on a smaller screen.",
+    layout: "grid",
+    shots: [
+      ["19-rate-limiting.png", "Rate limiting after repeated failed OTP attempts"],
+      ["20-mobile-view.png", "Responsive mobile layout"],
+    ]
+  },
+];
+
+const gallery = document.getElementById("gallery");
+const flat = []; // for lightbox prev/next across the whole page
+
+sections.forEach(sec => {
+  const section = document.createElement("section");
+  section.className = "group";
+  section.id = sec.id;
+  section.innerHTML = `
+    <div class="group-head">
+      <h2>${sec.title}</h2>
+      <div class="rule"></div>
+    </div>
+    <p style="color:var(--ink-soft);font-size:15px;margin:-14px 0 24px">${sec.note}</p>
+    <div class="${sec.layout === 'flow' ? 'flow' : 'grid'}"></div>
+  `;
+  const container = section.querySelector(sec.layout === 'flow' ? '.flow' : '.grid');
+
+  sec.shots.forEach(([file, caption]) => {
+    const idx = flat.length;
+    flat.push({ file, caption });
+
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `<img src="screenshots/${file}" alt="${caption}" loading="lazy">
+                       <div class="cap">${caption}</div>`;
+    card.addEventListener("click", () => openLightbox(idx));
+    container.appendChild(card);
+  });
+
+  gallery.appendChild(section);
+});
+
+// Lightbox logic
+const lb = document.getElementById("lightbox");
+const lbImg = document.getElementById("lbImg");
+const lbCap = document.getElementById("lbCap");
+let current = 0;
+
+function openLightbox(i){
+  current = i;
+  render();
+  lb.classList.add("open");
+}
+function render(){
+  const item = flat[current];
+  lbImg.src = `screenshots/${item.file}`;
+  lbImg.alt = item.caption;
+  lbCap.textContent = item.caption;
+}
+function closeLightbox(){ lb.classList.remove("open"); }
+
+document.getElementById("lbClose").addEventListener("click", closeLightbox);
+document.getElementById("lbPrev").addEventListener("click", () => { current = (current - 1 + flat.length) % flat.length; render(); });
+document.getElementById("lbNext").addEventListener("click", () => { current = (current + 1) % flat.length; render(); });
+lb.addEventListener("click", e => { if (e.target === lb) closeLightbox(); });
+document.addEventListener("keydown", e => {
+  if (!lb.classList.contains("open")) return;
+  if (e.key === "Escape") closeLightbox();
+  if (e.key === "ArrowLeft") document.getElementById("lbPrev").click();
+  if (e.key === "ArrowRight") document.getElementById("lbNext").click();
+});
+</script>
+</body>
+</html>
